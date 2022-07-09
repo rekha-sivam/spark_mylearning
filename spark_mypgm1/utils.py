@@ -14,6 +14,9 @@ import getpass
 
 
 def readJson():
+
+    #readJson()
+
     f = open('/home/hadoop/Downloads/dataanalytics-main/Spark/Emp/empdetail.json')
     data = json.load(f)
     for i in data['emp_details']:
@@ -22,6 +25,8 @@ def readJson():
 
 
 def readCSV(spark):
+    #df_mysql = readCSV(spark)
+
     df = spark.read.csv('file:///home/hadoop/Downloads/dataanalytics-main/Spark/Emp/emp1.csv', header=True, sep=':',
                         comment='@', quote='"', inferSchema='True', enforceSchema='False',
                         ignoreLeadingWhiteSpace='True',
@@ -29,15 +34,19 @@ def readCSV(spark):
 
 
 def readTextFile(sc, spark):
+    #readTextFile(sc, spark)
+
     try:
-        rdd = sc.textFile('file:///home/hadoop/Downloads/dataanaytics-main/Hive/Emp/emp.txt')
+        rdd = sc.textFile('file:///home/hadoop/Downloads/dataanalytics-main/Hive/Emp/emp.txt')
         df2 = spark.read.csv(rdd).show()
     except Exception as e:
-        print('error occurred')
-        # print(e)
+        #print('error occurred')
+        print(e)
 
 
 def exploreDir(inputPath):
+    #exploreDir('/home/hadoop/Downloads/dataanalytics-main')
+
     list = os.listdir(inputPath)
     print(list)
 
@@ -48,6 +57,8 @@ def walk_error_handler(exception_instance):
 
 
 def recursiveFileList(inputPath):
+    #recursiveFileList("/home/hadoop/Downloads/dataanalytics-main")
+
     try:
         res = []
         for (dir_path, dir_names, file_names) in walk(inputPath, onerror=walk_error_handler):
@@ -58,6 +69,8 @@ def recursiveFileList(inputPath):
 
 
 def recursiveDirList(inputPath):
+    #recursiveDirList('/home/hadoop/Downloads/dataanalytics-main/Spark')
+
     if not path.exists(inputPath):
         raise TypeError("Path not found")
     for (root, dirs, files) in os.walk(inputPath, topdown=True):
@@ -65,9 +78,17 @@ def recursiveDirList(inputPath):
         print(dirs)
         print(files)
         print('--------------------------------')
+def getastring():
+    #getastring()
 
+    value = input("Please enter a string:\n")
+    print(f'You entered {value}')
 
 def calc(value1, value2):
+    # value1 = input("Please enter first integer:\n")
+    # value2 = input("Please enter second integer:\n")
+    # calc(value1, value2)
+
     try:
         v1 = int(value1)
         v2 = int(value2)
@@ -102,6 +123,9 @@ def calc(value1, value2):
 
 
 def readmysql(spark):
+
+    #readmysql(spark)
+
     df = spark.read \
         .format("jdbc") \
         .option("url", "jdbc:mysql://127.0.0.1:3306/hivemetastore") \
@@ -153,9 +177,14 @@ def createschemadynamic(spark):
     results.show()
 
 def pandasreadcsv(path_value,spark):
+    # path_value = '/home/hadoop/Downloads/dataanalytics-main/Hive/sales/sales1.csv'
+    # df = pandasreadcsv(path_value, spark)
+
     P_df = pandas.read_csv(path_value,sep='|',index_col=False)
     P_df.reset_index(drop=True, inplace=True)
+    print(P_df)
     S_df = spark.createDataFrame(P_df)
+    print(S_df)
     # S_df.printSchema()
     #S_df.write.format('jdbc').options(url='jdbc:mysql://localhost/hivemetastore',driver='com.mysql.cj.jdbc.Driver',dbtable='marks',user='hive', password='hive123!').mode('append').save()
     #S_df.write.save('dfs:///user/hdfs/test/mark_new', format='parquet', mode='append')
@@ -164,6 +193,10 @@ def pandasreadcsv(path_value,spark):
 
 
 def writetohdfs(df,spark):
+    # path_value = '/home/hadoop/Downloads/dataanalytics-main/Hive/sales/sales1.csv'
+    # df = pandasreadcsv(path_value, spark)
+    # writetohdfs(df, spark)
+
     try:
         print(df)
         df.printSchema()
@@ -190,6 +223,11 @@ def writetohdfs(df,spark):
         print(content)
 
 def hdfstohivetable(df,spark):
+    # path_value = '/home/hadoop/Downloads/dataanalytics-main/Hive/sales/sales1.csv'
+    # df = pandasreadcsv(path_value, spark)
+    # writetohdfs(df, spark)
+    # hdfstohivetable(df, spark)
+
     df.write.format("orc").mode("overwrite").saveAsTable("hive_store_db.test_table1")
     df1 = spark.sql("select * from hive_store_db.test_table1")
     #df1= spark.sql("create table test_table(val1 int,val2 int,val3 int) stored as orc location '/user/hdfs/spark")
@@ -197,6 +235,8 @@ def hdfstohivetable(df,spark):
     print(df)
 
 def dropindex(spark):
+    #dropindex(spark)
+
     l1 = ['blue', 'red', 'green', 'black', 'yellow']
     print(l1)
     df = pd.DataFrame(l1)

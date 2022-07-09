@@ -5,8 +5,6 @@ import os
 from utils import *
 from pyspark.sql import SparkSession
 from pyspark import SparkContext
-
-
 from pyspark.sql.functions import *
 # Press Shift+F10 to execute it or replace it with your code.
 # Press Double Shift to search everywhere for classes, files, tool windows, actions, and settings.
@@ -23,27 +21,11 @@ if __name__ == '__main__':
     sc = spark.sparkContext
     spark.conf.set("spark.sql.debug.maxToStringFields", 1000)
     print_hi('PyCharm')
-    #exploreDir('/home/hadoop/Downloads/dataanalytics-main')
-    #recursiveFileList("/home/hadoop/Downloads/dataanalytics-main")
 
-    #recursiveDirList('/home/hadoop/Downloads/dataanalytics-main/Spark')
     #df_mysql = readCSV(spark)
     #writeToMysql(df_mysql)
-    #sc.setLogLevel("INFO");
+    sc.setLogLevel("INFO");
+    #createschemadynamic(spark)
 
-    # path_value = '/home/hadoop/Downloads/dataanalytics-main/Hive/sales/sales1.csv'
-    # df = pandasreadcsv(path_value,spark)
-    # #writetohdfs(df,spark)
-    #hdfstohivetable(df,spark)
-    createschemadynamic(spark)
 
-    #dropindex(spark)
-   #readTextFile(sc,spark)
-   # readmysql(spark)
-    #readJson()
-# value = input("Please enter a string:\n")
-# print(f'You entered {value}')
-# value1 = input("Please enter first integer:\n")
-# value2 = input("Please enter second integer:\n")
-# calc(value1,value2)
 # See PyCharm help at https://www.jetbrains.com/help/pycharm/
