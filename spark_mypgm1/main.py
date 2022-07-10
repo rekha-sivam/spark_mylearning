@@ -19,13 +19,13 @@ def print_hi(name):
 if __name__ == '__main__':
     spark = SparkSession.builder.appName('input1').config("spark.jars", "/usr/share/java/mysql-connector-java-8.0.23.jar").enableHiveSupport().getOrCreate()
     sc = spark.sparkContext
-    spark.conf.set("spark.sql.debug.maxToStringFields", 1000)
+    spark.conf.set("spark.sql.debug.maxToStringFields", 6000)
     print_hi('PyCharm')
 
     #df_mysql = readCSV(spark)
     #writeToMysql(df_mysql)
     sc.setLogLevel("INFO");
     #createschemadynamic(spark)
-
+    handle_complexjsondata(spark)
 
 # See PyCharm help at https://www.jetbrains.com/help/pycharm/

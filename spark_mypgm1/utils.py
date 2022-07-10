@@ -1,5 +1,4 @@
 import logging
-
 import pandas
 import pandas as pd
 import json
@@ -9,6 +8,7 @@ import os.path
 from os import path
 import mysql.connector
 from pyspark.sql.types import *
+from pyspark.sql.functions import *
 import logging
 import getpass
 
@@ -243,3 +243,55 @@ def dropindex(spark):
     df1 = spark.createDataFrame(df).show()
     # df = df.reset_index(drop=True)
     # print(df.head())
+def addingleadingzeros(spark):
+    #addingleadingzeros(spark)
+
+    l = [('Banu',30),('Ram',7),('Mano',65),('jamal',50),('geetha',100),('aarthi',45),('kiran',90),('Manju',34)]
+    columns = ['Name', 'Score']
+    df = spark.createDataFrame(data=l,schema = columns)
+    df.show()
+    #df.withColumnRenamed("Name", "NameoftheEmp").show()
+    #df.printSchema()
+    df = df.withColumn('Score_New',lpad(df.Score,3,'0')).show()
+def format_string_addingleadingzeros(spark):
+    #format_string_addingleadingzeros(spark)
+
+    l = [('Banu', 30), ('Ram', 7), ('Mano', 65), ('jamal', 50), ('geetha', 100), ('aarthi', 45), ('kiran', 90),
+         ('Manju', 34)]
+    columns = ['Name', 'Score']
+    df = spark.createDataFrame(data=l, schema=columns)
+    df.show()
+    df = df.withColumn("Score_000",format_string("%03d",col("Score")))
+    df.show()
+    df = df.withColumn("Name_Score",format_string("%s#%03d",col("Name"),col("Score")))
+    df.show()
+
+def ConcatSubstring_addingleadingzeros(spark):
+    #ConcatSubstring_addingleadingzeros(spark)
+
+    l = [('Banu', 30), ('Ram', 7), ('Mano', 65), ('jamal', 50), ('geetha', 100), ('aarthi', 45), ('kiran', 90),
+         ('Manju', 34)]
+    columns = ['Name', 'Score']
+    df = spark.createDataFrame(data=l, schema=columns)
+    df.show()
+    df2 = df.withColumn("Score_000",concat(lit("00"),col("Score")))
+    df2.show()
+    df3 = df2.withColumn("Score_000",substring(col("Score_000"),-3,3))
+    df3.show()
+
+def handle_complexjsondata(spark):
+
+    df = spark.read.option("multiline","true").json("file:///home/hadoop/Complexjson.json")
+    df.select(explode("batters.batter"))
+    df.show()
+    df_final = df.withColumn("topping_explode",explode("topping"))\
+                 .withColumn("topping_id",col("topping_explode.id"))\
+                 .withColumn("topping_type",col("topping_explode.type"))\
+                 .drop("topping","topping_explode")\
+                 .withColumn("batter_explode",explode("batters.batter"))\
+                 .withColumn("batter_id", col("batter_explode.id"))\
+                 .withColumn("batter_type", col("batter_explode.type"))\
+                 .drop("batters","batter_explode")
+    df_final.show()
+
+
