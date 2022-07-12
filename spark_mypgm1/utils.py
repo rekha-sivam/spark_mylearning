@@ -9,6 +9,7 @@ from os import path
 import mysql.connector
 from pyspark.sql.types import *
 from pyspark.sql.functions import *
+from pyspark.sql.window import *
 import logging
 import getpass
 
@@ -280,6 +281,7 @@ def ConcatSubstring_addingleadingzeros(spark):
     df3.show()
 
 def handle_complexjsondata(spark):
+    #handle_complexjsondata(spark)
 
     df = spark.read.option("multiline","true").json("file:///home/hadoop/Complexjson.json")
     df.select(explode("batters.batter"))
@@ -294,4 +296,56 @@ def handle_complexjsondata(spark):
                  .drop("batters","batter_explode")
     df_final.show()
 
+def dateyytoyyyy(spark):
+    #dateyytoyyyy(spark)
 
+    df = spark.read.option("nullvalue","NULL").csv('file:///home/hadoop/yytoyyyy.csv',header=True,inferSchema=True)
+    #df.show()
+    #df.printSchema()
+    #print(df.select("HIREDATE").show())
+    df1 = df.withColumn("HIREDATE",to_date("HIREDATE","dd-MM-yy"))
+    df1.show()
+
+    # spark.conf.set("spark.sql.legacy.timeParserPolicy","LEGACY")
+def Format_DatetoTimeStamp(spark):
+    #Format_DatetoTimeStamp(spark)
+
+    df = spark.read.format("csv").option("header","true")\
+         .option("inferschema","true")\
+         .option("timestampFormat","M/d/yyy")\
+         .load("file:///home/hadoop/DTtoTS.csv")
+    df.printSchema()
+    df.show()
+def Find_minmax(spark):
+    #Find_minmax(spark)
+
+    df = spark.read.format("csv").option("header", "true") \
+        .option("inferschema", "true") \
+        .load("file:///home/hadoop/MinMax.csv")
+    df.printSchema()
+    df.show()
+    df1 =df.withColumn("great",greatest("term1","term2","term3","term4"))\
+            .withColumn("least",least("term1","term2","term3","term4"))
+    df1.show()
+def Finddistance_crossjoin(spark):
+    #Finddistance_crossjoin(spark)
+
+    l = [[1,"Station1","4:20 AM"],[1,"Station2","5:30 AM"],[1,"Station3","7:30 AM"],
+         [2,"Station2","5:50 AM"],[2,"Station4","7:30 AM"],[2,"Station5","11:30 AM"],[2,"Station6","1:30 PM"]]
+
+    df = spark.createDataFrame(l,["BusID","Station","Time"])
+    #print("Input Spark DataFrame:")
+    #df.filter("BusID=1").show()
+    #df.show()
+    #df.join(df,how ='cross',on="BusID")
+    windowSpec = Window.partitionBy("BusID").orderBy(to_timestamp("Time","hh:mm a").asc())
+    df_wind = df.withColumn("row_num",row_number().over(windowSpec))
+    df2 = df_wind
+    #df2.show()
+    #spark.sql.analyzer.failAmbiguousSelfJoin = False
+    df_out = df_wind.join(df2,(df_wind["row_num"]<col("df2.row_num")) & (df_wind["BusID"]==col("df2.BusID"))).select(df_wind["BusID"],df_wind["Station"].alias("Source_Point"),df_wind["Time"].alias("Source_Time"),col("df2.Station").alias("Destination_Point"),col("df2.Time").alias("Destination_Time"))
+    df_out.show()
+   # print("output DataFrame:")
+
+    # df_final = df_out.withColumn("Travel_Time",(to_timestamp(("Destination_Time",'hh:mm a').cast("long")-to_timestamp("Source_Time","Destination_Time").orderBy("Source_Point","Destination_Point"))))
+    # df_final.show()
