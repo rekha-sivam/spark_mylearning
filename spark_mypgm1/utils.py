@@ -340,12 +340,18 @@ def Finddistance_crossjoin(spark):
     #df.join(df,how ='cross',on="BusID")
     windowSpec = Window.partitionBy("BusID").orderBy(to_timestamp("Time","hh:mm a").asc())
     df_wind = df.withColumn("row_num",row_number().over(windowSpec))
-    df2 = df_wind
+    #df2 = df_wind
     #df2.show()
     #spark.sql.analyzer.failAmbiguousSelfJoin = False
-    df_out = df_wind.join(df2,(df_wind["row_num"]<col("df2.row_num")) & (df_wind["BusID"]==col("df2.BusID"))).select(df_wind["BusID"],df_wind["Station"].alias("Source_Point"),df_wind["Time"].alias("Source_Time"),col("df2.Station").alias("Destination_Point"),col("df2.Time").alias("Destination_Time"))
+    df_out = df_wind.join(df_wind.alias("df2"),
+                          (df_wind["row_num"]<col("df2.row_num"))\
+             & (df_wind["BusID"]==col("df2.BusID")))\
+        .select(df_wind["BusID"],df_wind["Station"].alias("Source_Point"),
+                df_wind["Time"].alias("Source_Time"),
+                col("df2.Station").alias("Destination_Point"),
+                col("df2.Time").alias("Destination_Time"))
     df_out.show()
-   # print("output DataFrame:")
+    print("output DataFrame:")
 
-    # df_final = df_out.withColumn("Travel_Time",(to_timestamp(("Destination_Time",'hh:mm a').cast("long")-to_timestamp("Source_Time","Destination_Time").orderBy("Source_Point","Destination_Point"))))
-    # df_final.show()
+    df_final = df_out.withColumn("Travel_Time",(to_timestamp("Destination_Time",'hh:mm a').cast("long")-to_timestamp("Source_Time",'hh:mm a').cast("long"))/60).drop("Source_Time","Destination_Time").orderBy("Source_Point","Destination_Point")
+    df_final.show()
