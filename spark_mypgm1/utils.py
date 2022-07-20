@@ -1,10 +1,11 @@
-import logging
+
 import pandas
 import pandas as pd
 import json
 import os
 import os.path
 import logging
+import logging.config
 import getpass
 from os import walk
 from os import path
@@ -37,7 +38,8 @@ def readTextFile(sc, spark):
 
     try:
         rdd = sc.textFile('file:///home/hadoop/Downloads/dataanalytics-main/Hive/Emp/emp.txt')
-        df2 = spark.read.csv(rdd).show()    #There are three ways to read text files into PySpark DataFrame
+        df2 = spark.read.csv(rdd).show()
+        #There are three ways to read text files into PySpark DataFrame
         #Read text file using spark.read.text()
         #f=spark.read.text("file:///home/hadoop/wc.txt")
         #Read text file using spark.read.csv()
@@ -167,10 +169,7 @@ def pandasreadcsv(path_value,spark):
     print(P_df)
     S_df = spark.createDataFrame(P_df)
     print(S_df)
-    # S_df.printSchema()
-    #S_df.write.format('jdbc').options(url='jdbc:mysql://localhost/hivemetastore',driver='com.mysql.cj.jdbc.Driver',dbtable='marks',user='hive', password='hive123!').mode('append').save()
-    #S_df.write.save('dfs:///user/hdfs/test/mark_new', format='parquet', mode='append')
-    #S_df.coalesce(1).write.orc('hdfs:///user/hdfs/spark', 'overwrite')
+
     return S_df
 
 
@@ -180,29 +179,27 @@ def writetohdfs(df,spark):
     # writetohdfs(df, spark)
 
     try:
-        print(df)
+        #print(df)
         df.printSchema()
         df.coalesce(1).write.orc('hdfs:///user/hdfs/spark','overwrite')
     except:
-        print('exception occured')
-    else:
-        # df.coalesce(1).write.format("orc").mode("overwrite").save("hdfs:///user/hdfs/spark/processed")
-        # my_file = open("log_file.txt", "w")
-        # fname ='hdfs:///user/hdfs/spark/processed/part-00000-705e06c8-51f5-4176-a4ac-53f326038245-c000.snappy.orc'
-        # size = os.path.getsize('f:hdfs:///user/hdfs/spark/processed/part-00000-705e06c8-51f5-4176-a4ac-53f326038245-c000.snappy.orc')
-        #
-        # my_file.write(f'Filename:{fname}\n')
-        # my_file.write("Status:completed\n")
-        # print('Size of file is', size, 'bytes')
+        logging.config.fileConfig(path.normpath("applog.config"))
 
-        # get file stats
-        # stats = os.stat('f:/file.txt')
-        # print('Size of file is', stats.st_size, 'bytes')
-        #
-        my_file = open("log_file.txt")
-        content = my_file.read()
-        my_file.close()
-        print(content)
+        # Create the logger
+        # Admin_Client: The name of a logger defined in the config file
+        myLogger = logging.getLogger('utils')
+
+        msg = 'This is a Warning'
+        myLogger.debug(msg)
+        myLogger.info(msg)
+        myLogger.warn(msg)
+        myLogger.error(msg)
+        myLogger.critical(msg)
+
+        # Shut down the logger
+        logging.shutdown()
+
+
 
 def hdfstohivetable(df,spark):
     # path_value = '/home/hadoop/Downloads/dataanalytics-main/Hive/sales/sales1.csv'

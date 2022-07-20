@@ -1,0 +1,17 @@
+id|sname|pid|amt|sdatets|did	
+1|Viswam Super Market|4|8000|2021-04-05 05:40:00|3
+2|Mano Super Market|4|8000|2021-04-05 08:40:00|4
+3|Prabu Super Market|4|3000|2021-04-05 11:40:00|5
+4|Prabu Super Market|8|2000|2021-04-05 11:40:00|3
+5|Mano Super Market|8|7000|2021-04-05 08:40:00|4
+6|Viswam Super Market|8|1000|2021-04-05 10:40:00|5
+7|Viswam Super Market|3|5000|2021-03-05 10:40:00|6
+8|Mano Super Market|3|2000|2021-03-05 08:40:00|7
+9|Prabu Super Market|3|8000|2021-03-05 12:40:00|8
+10|Prabu Super Market|7|4500|2021-02-05 12:40:00|9
+11|Mano Super Market|7|8000|2021-03-05 08:40:00|10
+12|Mano super Market|7|8000|2021-02-05 08:40:00|10
+13|Viswam Super Market|7|9000|2021-02-05 10:40:00|10
+14|Viswam Super Market|6|6800|2021-02-05 10:40:00|3
+15|Mano Super Market|6|3500|2021-02-05 08:40:00|4
+16|Prabu Super Market|6|4500|2021-02-05 12:40:00|5		
