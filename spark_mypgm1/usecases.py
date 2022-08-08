@@ -200,7 +200,59 @@ def ConcatSubstring_addingleadingzeros(spark):
     df2.show()
     df3 = df2.withColumn("Score_000",substring(col("Score_000"),-3,3))
     df3.show()
+def flatten_Jsonfile(spark):
+    #flatten_Jsonfile(spark)
 
+    df = spark.read.format("csv").option("header", "true") \
+        .option("inferschema", "true") \
+        .load("file:///home/hadoop/codes/spark_mylearning/spark_mypgm1/Source files/Sampleflatten.csv")
+    df.printSchema()
+    df.show()
+    df.select("*", json_tuple("request", "Response")).show()
+    df.select("*", json_tuple("request", "Response")).drop("request") \
+        .select("*", json_tuple("c0", "MessageId", "Latitude", "longitude") \
+                .alias("MessageId", "Latitude", "longitude")).drop("c0").show()
+
+def Split_column(spark):
+    #Split_column(spark)
+
+    df = spark.read.format("csv").option("header", "true") \
+        .option("inferschema", "true") \
+        .load("file:///home/hadoop/codes/spark_mylearning/spark_mypgm1/Source files/Splcol.csv")
+    #df.printSchema()
+    df.show()
+    df1 = df.withColumn("NamArr", split(col("name"), "[,]")) \
+            .withColumn("firstname", col("NamArr")[0]) \
+            .withColumn("middlename", col("NamArr")[1]) \
+            .withColumn("lastname", col("NamArr")[2]) \
+            .drop("name").drop("NamArr")
+    df1.show()
+def DF_Empty(spark):
+    #DF_Empty(spark)
+
+    df = spark.read.format("csv").option("header", "true") \
+        .option("inferschema", "true").option("sep","|")\
+        .load("file:///home/hadoop/codes/spark_mylearning/spark_mypgm1/Source files/uspopulation.csv")
+    #df.printSchema()
+    df.show()
+    groupdata = df.filter("state_code == 'NY'").groupby("city").sum("2019_estimate")
+    groupdata.show()
+    #IS_Empty_Group(groupdata)
+    RDDIS_Empty(groupdata)
+
+def RDDIS_Empty(groupdata):
+    #RDDIS_Empty(groupdata)
+    if groupdata.rdd.isEmpty():
+        print("Dataframe is empty")
+    else:
+        print("Dataframe has values")
+
+def IS_Empty_Group(groupdata):
+    #IS_Empty_Group(groupdata)
+    if groupdata.count() > 0:
+        print("Dataframe has values")
+    else:
+        print("Dataframe is empty")
 
 
 

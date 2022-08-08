@@ -4,6 +4,7 @@ import pyspark
 import os
 from utils import *
 from usecases import *
+from SparkStreaming import *
 from pyspark.sql import SparkSession
 from pyspark import SparkContext
 from pyspark.sql.functions import *
@@ -31,9 +32,10 @@ if __name__ == '__main__':
     #writeToMysql(df_mysql)
     sc.setLogLevel("INFO");
     #createschemadynamic(spark)
-    path_value = '/home/hadoop/Downloads/dataanalytics-main/Hive/sales/sales1.csv'
-    df = pandasreadcsv(path_value, spark)
-    writetohdfs(df, spark)
+    #flatten_Jsonfile(spark)
+    DF_Empty(spark)
+
+
 
 
 

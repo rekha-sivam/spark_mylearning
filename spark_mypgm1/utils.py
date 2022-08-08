@@ -199,6 +199,14 @@ def writetohdfs(df,spark):
         # Shut down the logger
         logging.shutdown()
 
+def read_hivetable(spark):
+    #read from hive table
+
+    spark.sql('use default;')
+
+    #spark.sql('show tables;').show()
+    df = spark.sql("select count(1) from storeinfo;")
+    df.show(10)
 
 
 def hdfstohivetable(df,spark):
