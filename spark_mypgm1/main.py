@@ -33,7 +33,7 @@ if __name__ == '__main__':
     sc.setLogLevel("INFO");
     #createschemadynamic(spark)
     #flatten_Jsonfile(spark)
-    DF_Empty(spark)
+    Filter_Tempview(spark)
 
 
 

@@ -254,5 +254,15 @@ def IS_Empty_Group(groupdata):
     else:
         print("Dataframe is empty")
 
+def Filter_Tempview(spark):
+    #Filter_Tempview(spark)
 
-
+    df = spark.read.format("csv").option("header", "true") \
+        .option("inferschema", "true") \
+        .load("file:///home/hadoop/MinMax.csv")
+    df.show()
+    df1 = df.filter("term4 < 50")
+    df1.show()
+    df.createOrReplaceTempView('filterview')
+    df2 = spark.sql("select * from filterview where term1>50")
+    df2.show()
